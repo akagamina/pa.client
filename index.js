@@ -39,6 +39,9 @@ class PerformanceAnalytics {
 
 const analytics = new PerformanceAnalytics
 
+console.log(analytics.getAnalytics())
+
+
 window.addEventListener("load", analytics.sendAnalytics())
 
 
