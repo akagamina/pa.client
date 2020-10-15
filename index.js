@@ -14,12 +14,12 @@ class PerformanceAnalytics {
   }
 
   getAnalytics() {
-    const { responseStart, requestStart, domComplete, responseEnd, loadEventEnd } = performance.getEntriesByType("navigation")[0]
+    const { responseStart, requestStart, domComplete, responseEnd, unloadEventEnd } = performance.getEntriesByType("navigation")[0]
     return {
       fcp: this.getFCP() || 0,
       ttfb: responseStart - requestStart,
       domLoad: domComplete,
-      windowLoad: loadEventEnd - responseEnd
+      windowLoad: unloadEventEnd - responseEnd
     }
 
   }
