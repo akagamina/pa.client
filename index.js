@@ -1,9 +1,10 @@
-const url = "localhost:3000/log"
+const url = "https://localhost:3000/log"
 
 class PerformanceManager {
 
   constructor(performanceAnalytics) {
     this.performance = performanceAnalytics
+    console.log('this.performance: ', this.performance)
   }
 
   start() {
@@ -25,6 +26,7 @@ class PerformanceAnalytics {
 
   getMetrics() {
     const { responseStart, requestStart, domComplete, responseEnd, unloadEventEnd } = performance.getEntriesByType("navigation")[0]
+    console.log('responseStart: ', responseStart)
     return {
       fcp: this.getFCP(),
       ttfb: responseStart - requestStart,
@@ -33,7 +35,6 @@ class PerformanceAnalytics {
     }
   }
 }
-
 
 const performanceManager = new PerformanceManager()
 
