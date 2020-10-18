@@ -1,4 +1,4 @@
-const url = "https://localhost:3000/log"
+const url = "https://patrendyolapi.herokuapp.com/log"
 
 class PerformanceManager {
 
