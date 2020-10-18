@@ -1,47 +1,44 @@
-const url = "https://patrendyolapi.herokuapp.com/log"
+const url = "localhost:3000/log"
 
+class PerformanceManager {
+
+  constructor(performanceAnalytics) {
+    this.performance = performanceAnalytics
+  }
+
+  start() {
+    window.addEventListener("unload", this.sendData)
+  }
+
+  sendData() {
+    const data = this.performance.getMetrics
+    if (navigator.sendBeacon) navigator.sendBeacon(url, JSON.stringify(data))
+    else fetch(url, { data, method: 'POST', keepalive: true })
+  }
+}
 
 class PerformanceAnalytics {
 
-  constructor() {
-    this.getFCP()
-    this.getAnalytics()
-  }
-
   getFCP() {
-    const paintMetrics = performance.getEntriesByType("paint")
-    paintMetrics.forEach(paintMetric => paintMetric.startTime)
+    return performance.getEntriesByName("first-contentful-paint")[0].startTime
   }
 
-  getAnalytics() {
+  getMetrics() {
     const { responseStart, requestStart, domComplete, responseEnd, unloadEventEnd } = performance.getEntriesByType("navigation")[0]
     return {
-      fcp: this.getFCP() || 0,
+      fcp: this.getFCP(),
       ttfb: responseStart - requestStart,
       domLoad: domComplete,
       windowLoad: unloadEventEnd - responseEnd
     }
-
-  }
-
-  sendAnalytics() {
-    window.addEventListener("unload", () => {
-      try {
-        if (navigator.sendBeacon) navigator.sendBeacon(url, JSON.stringify(this.getAnalytics()))
-        else fetch(url, { data: this.getAnalytics(), method: 'POST', keepalive: true })
-      } catch (error) {
-        console.log('error: ', error)
-      }
-    })
   }
 }
 
 
-const analytics = new PerformanceAnalytics
+const performanceManager = new PerformanceManager()
 
-console.log(analytics.getAnalytics())
+performanceManager.start()
 
-window.addEventListener("load", analytics.sendAnalytics())
 
 
 
