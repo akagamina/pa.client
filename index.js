@@ -2,9 +2,8 @@ const url = "https://patrendyolapi.herokuapp.com/log"
 
 class PerformanceManager {
 
-  constructor(performanceAnalytics) {
-    this.performance = performanceAnalytics
-    console.log('this.performance: ', this.performance)
+  constructor() {
+    this.analytics = new PerformanceAnalytics()
   }
 
   start() {
@@ -12,21 +11,21 @@ class PerformanceManager {
   }
 
   sendData() {
-    const data = this.performance.getMetrics
-    if (navigator.sendBeacon) navigator.sendBeacon(url, JSON.stringify(data))
-    else fetch(url, { data, method: 'POST', keepalive: true })
+    const data = new PerformanceAnalytics
+    if (navigator.sendBeacon) return navigator.sendBeacon(url, JSON.stringify(data.getMetrics()))
+    else fetch(url, { data: data.getMetrics(), method: 'POST', keepalive: true })
   }
 }
 
 class PerformanceAnalytics {
 
   getFCP() {
-    return performance.getEntriesByName("first-contentful-paint")[0].startTime
+    return performance.getEntriesByName("first-contentful-paint")[0]?.startTime
   }
 
   getMetrics() {
     const { responseStart, requestStart, domComplete, responseEnd, unloadEventEnd } = performance.getEntriesByType("navigation")[0]
-    console.log('responseStart: ', responseStart)
+
     return {
       fcp: this.getFCP(),
       ttfb: responseStart - requestStart,
@@ -36,7 +35,7 @@ class PerformanceAnalytics {
   }
 }
 
-const performanceManager = new PerformanceManager()
+const performanceManager = new PerformanceManager
 
 performanceManager.start()
 
